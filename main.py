@@ -1,5 +1,3 @@
-"""Solve sudoku through backtracking."""
-
 from setting import Board
 
 if __name__ == "__main__":
