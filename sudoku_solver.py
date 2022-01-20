@@ -32,10 +32,25 @@ def print_board(bo):
             
 
 def solve(bo):
-    find = find_empty(bo)
+    blank = find_empty(bo)
+    if not blank:
+        return True
+    else:
+        # blankCell records (row, col)
+        row,col = blank
 
+    for i in range(1,10):
+        if valid(bo,i,(row,col)):
+            bo[row][col] = i
+        
+            if solve(bo):
+                return True
+            bo[row][col] = 0
+    
+    return False
 
 def find_empty(bo):
+# return the place of blank cell
     for i in range(9):
         for j in range(9):
             if bo[i][j] == 0:
@@ -43,5 +58,32 @@ def find_empty(bo):
         
     return None
 
-board = randomboard(board)
-print_board(board)
+def valid(bo,num,pos):
+    # Check row
+    for i in range(9):
+        if bo[pos[0]][i] == num and pos[1] != i:
+            return False
+    
+    # Check coloumn
+    for i in range(9):
+        if bo[i][pos[1]] == num and pos[0] != i:
+            return False
+    
+    # Check square
+    # Find which square the blank cell lays
+    square_x = pos[0] // 3
+    square_y = pos[1] // 3
+
+    for i in range(square_x*3, square_x*3+3):
+        for j in range(square_y*3,square_y*3+3):
+            if bo[i][j] == num and (i,j) != pos:
+                return False
+    
+    return True
+        
+
+
+solution = randomboard(board)
+solve(solution)
+
+print_board(solution)
