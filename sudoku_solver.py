@@ -1,8 +1,7 @@
 """Solve Sudoku through backtracking"""
 import random
 
-# create a blank board consisting of 0
-board = [[0 for x in range(9)] for x in range(9)]
+
 
 
 def randomboard(bo):
@@ -15,7 +14,7 @@ def randomboard(bo):
     choice3 = [[6,6],[6,7],[6,8],[7,6],[7,7],[7,8],[8,6],[8,7],[8,8]]
     pos3 = random.choice(choice3)
     bo[pos3[0]][pos3[1]] = random.randint(1,10)
-    return bo
+    return None
     
 def print_board(bo):
     for i in range(9):
@@ -81,9 +80,15 @@ def valid(bo,num,pos):
     
     return True
         
+def generate():
+# Generate a sudoku (blank cell: 35-50)
+    board = [[0 for x in range(9)] for x in range(9)]
+    randomboard(board)
+    solve(board)
 
-
-solution = randomboard(board)
-solve(solution)
-
-print_board(solution)
+    n = random.randint(35,50)
+    i = 0
+    while i < n:
+        board[random.randint(0,8)][random.randint(0,8)] = 0
+        i += 1
+    return board

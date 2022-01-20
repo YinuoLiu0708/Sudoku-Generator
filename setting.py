@@ -2,6 +2,7 @@
 
 from curses import window
 import pygame, sys
+import sudoku_solver
 
 class Board:
 
@@ -12,6 +13,9 @@ class Board:
         self.running = True
         self.mousePos = None
         self.selected = None
+        self.font = pygame.font.SysFont("arial", 30)
+        self.sudoku = None
+        self.mistake = 0
        
     def run(self):
         while self.running:
@@ -53,6 +57,13 @@ class Board:
     # draw cell that the mouse clicks    
         LIGHTBLUE = (100,149,237)
         pygame.draw.rect(window,LIGHTBLUE,(75+pos[0]*50,100+pos[1]*50,50,50))
+    
+    def drawNumbers(self,window,pos):
+        pass
+
+    def textToScreen(self,window,text,pos):
+        font = self.font.render(text,False,"Black")
+        window.blit(font,pos)
 
     def update(self):
         self.mousePos = pygame.mouse.get_pos()
