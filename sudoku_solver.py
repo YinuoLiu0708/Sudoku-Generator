@@ -86,7 +86,7 @@ def generate():
     randomboard(board)
     solve(board)
 
-    n = random.randint(35,50)
+    n = random.randint(45,55)
     i = 0
     while i < n:
         board[random.randint(0,8)][random.randint(0,8)] = 0
