@@ -20,7 +20,10 @@ class Board:
         self.ori_sudoku = copy.deepcopy(self.sudoku)
         self.solution = copy.deepcopy(self.sudoku)
         solve(self.solution)
+        self.lockedCells = []
+        self.incorrectNum = []
         self.correct = False
+        
 
     def run(self):
         while self.running:
@@ -49,15 +52,26 @@ class Board:
                     if self.isInt(event.unicode):
                         self.sudoku[self.selected[1]][self.selected[0]] = int(event.unicode)
                         self.check(self.selected,int(event.unicode))
+                        if self.correct:
+                            self.lockedCells.append(self.selected)
+                        else:
+                            self.incorrectNum.append(self.selected)
+                            self.mistake += 1
 
     def draw(self):
         self.window.fill("White")
         if self.selected:
             self.drawCell(self.window, self.selected)
-        self.shadeLockedCells()
+        self.findLockedCells()
+        self.redIncorrect()
+        self.shadeCells()
         self.drawNumbers()
+        self.showMistake()
         self.drawBoard()
         pygame.display.update()
+
+    def update(self):
+        self.mousePos = pygame.mouse.get_pos()
 
     def drawBoard(self):
     # draw a 9x9 board on window
@@ -77,21 +91,31 @@ class Board:
                 if num != 0:
                     pos = [50*x+93,50*y+112]
                     self.textToScreen(self.window,str(num),pos)
-                    
-    def shadeLockedCells(self):
-        GREY = (207,207,207)
+
+    def findLockedCells(self):
         for y, row in enumerate(self.ori_sudoku):
             for x, num in enumerate(row):
                 if num != 0:
-                    lockedCells = [x,y]
-                    pygame.draw.rect(self.window,GREY,(75+lockedCells[0]*50,100+lockedCells[1]*50,50,50))
+                    self.lockedCells.append([x,y])
+
+    def shadeCells(self):
+        GREY = (207,207,207)
+        for cell in self.lockedCells:
+            pygame.draw.rect(self.window,GREY,(75+cell[0]*50,100+cell[1]*50,50,50))
+
+    def redIncorrect(self):
+        RED = (255,182,193)
+        for cell in self.incorrectNum:
+            pygame.draw.rect(self.window,RED,(75+cell[0]*50,100+cell[1]*50,50,50))
+
+    def showMistake(self):
+        pos = [450,60]
+        text = f"mistake: {self.mistake}"
+        self.textToScreen(self.window,text,pos)
 
     def textToScreen(self,window,text,pos):
         font = self.font.render(text,True,"Black")
         window.blit(font,pos)
-
-    def update(self):
-        self.mousePos = pygame.mouse.get_pos()
 
     def mouseOnBoard(self):
         if self.mousePos[0] < 75 or self.mousePos[1] < 100:
@@ -110,18 +134,10 @@ class Board:
 
     def check(self,po,num):
         # Check to see the correctness of the filled number
-        x = po[0]
-        y = po[1]
+        
+        x = po[1]
+        y = po[0]
         if num == self.solution[x][y]:
             self.correct = True
         else:
             self.correct = False
-
-    def drawCorrectness(self,po):
-        GREY = (207,207,207)
-        x = po[0]
-        y = po[1]
-        if self.correct:
-            pygame.draw.rect(self.window,GREY,(75+x*50,100+y*50,50,50))
-        else:
-            pygame.draw.rect(self.window,"Red",(75+x*50,100+y*50,50,50))
