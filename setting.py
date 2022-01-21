@@ -2,7 +2,7 @@
 
 from curses import window
 import pygame, sys
-import sudoku_solver
+from sudoku_solver import *
 
 class Board:
 
@@ -13,9 +13,9 @@ class Board:
         self.running = True
         self.mousePos = None
         self.selected = None
-        self.font = pygame.font.SysFont("arial", 30)
-        self.sudoku = None
+        self.font = pygame.font.SysFont("arial", 25)
         self.mistake = 0
+        self.sudoku = generate()
        
     def run(self):
         while self.running:
@@ -42,6 +42,7 @@ class Board:
         self.window.fill("White")
         if self.selected:
             self.drawCell(self.window, self.selected)
+        self.drawNumbers()
         self.drawBoard()
         pygame.display.update()
 
@@ -58,11 +59,16 @@ class Board:
         LIGHTBLUE = (100,149,237)
         pygame.draw.rect(window,LIGHTBLUE,(75+pos[0]*50,100+pos[1]*50,50,50))
     
-    def drawNumbers(self,window,pos):
-        pass
+    def drawNumbers(self):
+        for y, row in enumerate(self.sudoku):
+            for x, num in enumerate(row):
+                if num != 0:
+                    pos = [50*x+93,50*y+112]
+                    self.textToScreen(self.window,str(num),pos)
+
 
     def textToScreen(self,window,text,pos):
-        font = self.font.render(text,False,"Black")
+        font = self.font.render(text,True,"Black")
         window.blit(font,pos)
 
     def update(self):
