@@ -7,13 +7,13 @@ import random
 def randomboard(bo):
     choice1 = [[0,0],[0,1],[0,2],[1,0],[1,1],[1,2],[2,0],[2,1],[2,2]]
     pos1 = random.choice(choice1)
-    bo[pos1[0]][pos1[1]] = random.randint(1,10)
+    bo[pos1[0]][pos1[1]] = random.randint(1,9)
     choice2 = [[3,3],[3,4],[3,5],[4,3],[4,4],[4,5],[5,3],[5,4],[5,5]]
     pos2 = random.choice(choice2)
-    bo[pos2[0]][pos2[1]] = random.randint(1,10)
+    bo[pos2[0]][pos2[1]] = random.randint(1,9)
     choice3 = [[6,6],[6,7],[6,8],[7,6],[7,7],[7,8],[8,6],[8,7],[8,8]]
     pos3 = random.choice(choice3)
-    bo[pos3[0]][pos3[1]] = random.randint(1,10)
+    bo[pos3[0]][pos3[1]] = random.randint(1,9)
     return None
     
 def print_board(bo):

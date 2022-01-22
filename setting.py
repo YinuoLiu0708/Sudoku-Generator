@@ -1,6 +1,7 @@
 """Pygame setting to create an interactive Sudoku board."""
 
 from curses import window
+from operator import imod
 import pygame, sys
 from sudoku_solver import *
 import copy
@@ -23,15 +24,16 @@ class Board:
         self.lockedCells = []
         self.incorrectNum = []
         self.correct = False
-        
+        self.game_time = 0
+        self.start_tick = pygame.time.get_ticks() 
+        self.complete = False
 
     def run(self):
         while self.running:
             self.events()
             self.update()
             self.draw()
-            
-                   
+               
     def events(self):
         for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -65,8 +67,10 @@ class Board:
         self.findLockedCells()
         self.redIncorrect()
         self.shadeCells()
-        self.drawNumbers()
+        self.drawNumbers(self.sudoku)
         self.showMistake()
+        self.showTime()
+        self.checkComplete()
         self.drawBoard()
         pygame.display.update()
 
@@ -85,8 +89,8 @@ class Board:
         LIGHTBLUE = (135,206,250)
         pygame.draw.rect(window,LIGHTBLUE,(75+pos[0]*50,100+pos[1]*50,50,50))
     
-    def drawNumbers(self):
-        for y, row in enumerate(self.sudoku):
+    def drawNumbers(self,numbers):
+        for y, row in enumerate(numbers):
             for x, num in enumerate(row):
                 if num != 0:
                     pos = [50*x+93,50*y+112]
@@ -109,7 +113,7 @@ class Board:
             pygame.draw.rect(self.window,RED,(75+cell[0]*50,100+cell[1]*50,50,50))
 
     def showMistake(self):
-        pos = [450,60]
+        pos = [410,55]
         text = f"mistake: {self.mistake}"
         self.textToScreen(self.window,text,pos)
 
@@ -134,10 +138,30 @@ class Board:
 
     def check(self,po,num):
         # Check to see the correctness of the filled number
-        
         x = po[1]
         y = po[0]
         if num == self.solution[x][y]:
             self.correct = True
         else:
             self.correct = False
+
+    def showTime(self):
+        seconds = (pygame.time.get_ticks() - self.start_tick) // 1000
+        if self.game_time != seconds: 
+            self.game_time = seconds
+        
+        minutes = self.game_time // 60
+        secs = str(self.game_time % 60) if (self.game_time % 60) > 9 else "0"+str(self.game_time % 60)
+        
+        pos = [410,20]
+        text = f"time: {minutes}:" + secs
+        self.textToScreen(self.window,text,pos)
+
+    def checkComplete(self):
+        blank = find_empty(self.sudoku)
+        pos = [250,50]
+        text = "You did it!"
+        if not blank and self.sudoku == self.solution:
+            self.complete = True
+        if self.complete == True:
+            self.textToScreen(self.window,text,pos)
