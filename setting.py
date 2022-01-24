@@ -5,6 +5,7 @@ from operator import imod
 import pygame, sys
 from sudoku_solver import *
 import copy
+from button import *
 
 class Board:
 
@@ -27,6 +28,7 @@ class Board:
         self.game_time = 0
         self.start_tick = pygame.time.get_ticks() 
         self.complete = False
+        self.button = Button()
 
     def run(self):
         while self.running:
@@ -48,6 +50,8 @@ class Board:
                        self.selected = boardPos
                     else:
                        self.selected = None
+                       if self.button.highlighted:
+                           self.button.click()
                 
                 # user types into number
                 if event.type == pygame.KEYDOWN:
@@ -62,12 +66,15 @@ class Board:
 
     def draw(self):
         self.window.fill("White")
+        self.button.draw(self.window)
         if self.selected:
             self.drawCell(self.window, self.selected)
         self.findLockedCells()
         self.redIncorrect()
         self.shadeCells()
         self.drawNumbers(self.sudoku)
+        if self.button.showSolution:
+            self.showSolution()
         self.showMistake()
         self.showTime()
         self.checkComplete()
@@ -76,6 +83,7 @@ class Board:
 
     def update(self):
         self.mousePos = pygame.mouse.get_pos()
+        self.button.update(self.mousePos)
 
     def drawBoard(self):
     # draw a 9x9 board on window
@@ -165,3 +173,6 @@ class Board:
             self.complete = True
         if self.complete == True:
             self.textToScreen(self.window,text,pos)
+
+    def showSolution(self):
+        self.drawNumbers(self.solution)
