@@ -1,3 +1,6 @@
 # Sudoku-Player
 
-To play the game, open and run the file play_game.py.
+
+## How to play
+Open and run the file "play_game.py" to play the sudoku.
+
